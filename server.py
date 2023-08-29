@@ -17,6 +17,7 @@ def chat_client(conn, addr): # precisaria rodar múltiplas instâncias dessa fun
                 if message: # aqui provavelmente um if pra checar se a msg não é comando "@"
                     print(f"<{addr}>: {message}")
                     conn.send(f"<{addr}>{message}".encode("utf-8"))
+                    # for user in connectedUsers: conn.send(f"{addr}{message}".enconde("utf-8"))
                 else:
                     client_connected = False
 
@@ -38,6 +39,8 @@ running = True
 while running:
     conn, addr = server.accept() # aceita a conexão, porém pausa o código until alguma conexão é aceita
     print(f"DEBUG: {addr} conectado")
+    # connectedUsers = []
+    # connectedUsers.append(conn)
     t1 = Thread(target=chat_client, args=(conn, addr))
     t1.start()
         
