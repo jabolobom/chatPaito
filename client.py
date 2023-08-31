@@ -12,7 +12,6 @@ port = int(sys.argv[2]) if len(sys.argv) > 2 else 19000
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # AF INET indica que o address é internet
 server.connect((ip_address, port))  # sockstrem é o protocolo ip
-socket.socket().setblocking(False)
 
 running = True
 while running:
