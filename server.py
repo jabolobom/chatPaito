@@ -14,7 +14,7 @@ def chat_client(conn, addr): # precisaria rodar múltiplas instâncias dessa fun
                 
                 if message: # aqui provavelmente um if pra checar se a msg não é comando "@"
                     print(f"<{addr}>: {message}")
-                    conn.send(f"<Voce: {addr}> {message}".encode("utf-8"))
+                    conn.send(f"<Voce:> {message}".encode("utf-8"))
                     for user in connectedUsers:
                          if user != conn:
                             try:
