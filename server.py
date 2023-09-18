@@ -2,19 +2,37 @@ import socket
 import select
 import sys
 from threading import Thread
+from datetime import datetime
 
-def chat_client(conn, addr): # precisaria rodar múltiplas instâncias dessa função para que o chat funcione?, monitorar vários
-    # hosts ao mesmo tempo?
+time = datetime.now().strftime("%H:%M:%S")
+print("Server aberto as:", time)
+
+
+def chat_client(conn, addr):
     client_connected = conn is not None
 
     try:
             while client_connected:
-                server.listen(5)
-                message = conn.recv(2048).decode("utf-8") # conn = socket / classe socket com métodos
                 
-                if message: # aqui provavelmente um if pra checar se a msg não é comando "@"
+                message = conn.recv(2048).decode("utf-8") 
+                
+                if message: 
                     print(f"<{addr}>: {message}")
                     conn.send(f"<Voce:> {message}".encode("utf-8"))
+
+                    if message.upper() == "@SAIR\n":
+                        client_connected = False
+                        connectedUsers.remove(conn)
+                        conn.send("DESCONECTAR".encode("utf-8"))
+                        print(f"DEBUG: {addr} se desconectou!")
+
+                    if len(msgList) > 15:
+                        msgList.pop(0)
+                        msgList.append([addr[1], time, message])
+                    else:
+                        msgList.append([addr[1], time, message])
+
+
                     for user in connectedUsers:
                          if user != conn:
                             try:
@@ -40,6 +58,7 @@ server.bind(('0.0.0.0', port)) # liga o socket a um endereço específico,
 server.listen(5) # espera pra entrar
 
 connectedUsers = list()
+msgList = list()
 
 running = True
 while running:

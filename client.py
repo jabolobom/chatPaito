@@ -10,8 +10,8 @@ if len(sys.argv) < 2:
 ip_address = sys.argv[1]
 port = int(sys.argv[2]) if len(sys.argv) > 2 else 19000
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # AF INET indica que o address é internet
-server.connect((ip_address, port))  # sockstrem é o protocolo ip
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # AF INET indica que o endereço é internet
+server.connect((ip_address, port))  # sockstrem, protocolo ip
 
 running = True
 while running:
@@ -19,15 +19,17 @@ while running:
     
     rs, ws, es = select.select(socket_list, [], [])
     if es:
-        print("ERR:", es) # errors
+        print("ERR:", es) 
     if ws:
-        print("WRT:", ws) # writers  ?
-    for sock in rs: # readers?
+        print("WRT:", ws) 
+    for sock in rs: 
         if sock == server:
             message = sock.recv(2048).decode("utf-8")
             print(message)
         else:
             message = sys.stdin.readline()
             server.send(message.encode("utf-8"))
+            if message.upper() == "@SAIR\n":
+                sys.exit(1)
 
 server.close()
