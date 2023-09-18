@@ -12,13 +12,16 @@ def chat_client(conn, addr):
     client_connected = conn is not None
 
     try:
+            conn.send("Insira seu apelido".encode("utf-8"))
+            apelido = conn.recv(2048).decode("utf-8")
+            conn.send(f"Bem-vindo, {apelido}".encode("utf-8"))
+
             while client_connected:
-                
                 message = conn.recv(2048).decode("utf-8") 
                 
                 if message: 
                     print(f"<{addr}>: {message}")
-                    conn.send(f"<Voce:> {message}".encode("utf-8"))
+                    conn.send(f"<Voce, {apelido}:: {message}".encode("utf-8"))
 
                     if message.upper() == "@SAIR\n":
                         client_connected = False
@@ -26,17 +29,22 @@ def chat_client(conn, addr):
                         conn.send("DESCONECTAR".encode("utf-8"))
                         print(f"DEBUG: {addr} se desconectou!")
 
+                    elif message.upper() == "@ORGANIZAR\n":
+                        for elemento in msgList:
+                            for x in elemento:
+                                print(x)
+
                     if len(msgList) > 15:
                         msgList.pop(0)
-                        msgList.append([addr[1], time, message])
+                        msgList.append([apelido ,addr[1], time, message])
                     else:
-                        msgList.append([addr[1], time, message])
+                        msgList.append([apelido, addr[1], time, message])
 
 
                     for user in connectedUsers:
                          if user != conn:
                             try:
-                              user.send(f"<User: {addr}> says: {message}".encode("utf-8"))
+                              user.send(f"<User: {apelido}:{addr} says:: {message}".encode("utf-8"))
                             except:
                                 connectedUsers.remove(user)
                                 user.close()
