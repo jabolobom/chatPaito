@@ -14,23 +14,25 @@ def chat_client(conn, addr): # Função principal, aceita e envia mensagens, org
             
             conn.send("Insira seu apelido".encode("utf-8"))
             apelido = conn.recv(2048).decode("utf-8")
+            apelido = apelido[:-1]
             conn.send(f"Bem-vindo, {apelido}".encode("utf-8"))
+            
 
             while client_connected: 
                 message = conn.recv(2048).decode("utf-8") # Loop infinito que espera uma mensagem do cliente 
                 
                 if message: # Tratamento da mensagem
                     print(f"<{addr}>: {message}") # Print no server
-                    conn.send(f"{apelido}({addr[1]}):: {message}".encode("utf-8")) # Reenvia "formatada" pro cliente
+                    conn.send(f"{apelido} ({addr[1]}):: {message}".encode("utf-8")) # Reenvia "formatada" pro cliente
 
                     if message.upper() == "@SAIR\n": # Checagem de comando
                         client_connected = False
                         connectedUsers.remove(conn) # Remove da lista pra evitar erros no repasse de mensagens
                         conn.send("DESCONECTAR".encode("utf-8"))
                         print(f"DEBUG: {addr} se desconectou!")
-                    elif message.upper() == "@ORGANIZAR\n": # Checagem de outro comando
+                    elif message.upper() == "@ORDENAR\n": # Checagem de outro comando
                         for elemento in msgList: # Mostra as últimas 15 mensagens na seguinte ordem: Tempo, Apelido(Porta), Mensagem
-                            conn.send(f"({elemento[2]}), {elemento[0]}({elemento[1]}) disse:: {elemento[3]}".encode("utf-8"))
+                            conn.send(f"({elemento[2]}), {elemento[0]} ({elemento[1]}) disse:: {elemento[3]}".encode("utf-8"))
                         
                     if len(msgList) > 15: # Caso ja existam 15 mensagens, remove a mais antiga
                         msgList.pop(0) 
@@ -45,7 +47,7 @@ def chat_client(conn, addr): # Função principal, aceita e envia mensagens, org
                             except: # Caso falhe em repassar, remove o usuário dos conectados
                                 connectedUsers.remove(user)
                                 user.close()
-                                
+
                 else: # Caso receba qualquer coisa que não seja uma mensagem, desconecta e remove o user da lista de ativos
                     client_connected = False
                     connectedUsers.remove(conn)
