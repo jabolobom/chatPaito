@@ -24,8 +24,8 @@ while running:
         print("WRT:", ws) 
     for sock in rs: 
         if sock == server:
-            message = sock.recv(2048).decode("utf-8")
-            print(message)
+            message = sock.recv(2048).decode("utf-8") # recebe de volta do servidor
+            print(message) # printa no terminal
         else:
             message = sys.stdin.readline() # Espera input do terminal
             server.send(message.encode("utf-8")) # Envia o input como texto para o server
