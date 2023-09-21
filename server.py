@@ -20,10 +20,10 @@ def chat_client(conn, addr): # Função principal, aceita e envia mensagens, org
 
             while client_connected: 
                 message = conn.recv(2048).decode("utf-8") # Loop infinito que espera uma mensagem do cliente 
-                
+
                 if message: # Tratamento da mensagem
                     print(f"<{addr}>: {message}") # Print no server
-                    conn.send(f"{apelido} ({addr[1]}):: {message}".encode("utf-8")) # Reenvia "formatada" pro cliente
+                    conn.send(f"{apelido} ({addr[1]}):: {message[:-1]}".encode("utf-8")) # Reenvia "formatada" pro cliente
 
                     if message.upper() == "@SAIR\n": # Checagem de comando
                         client_connected = False
@@ -43,7 +43,7 @@ def chat_client(conn, addr): # Função principal, aceita e envia mensagens, org
                     for user in connectedUsers: # Repassa a mensagem formatada para os outros usuários conectados
                          if user != conn:
                             try:
-                              user.send(f"<{apelido}({addr[1]}) :: {message}".encode("utf-8"))
+                              user.send(f"<{apelido} ({addr[1]}) :: {message[:-1]}".encode("utf-8"))
                             except: # Caso falhe em repassar, remove o usuário dos conectados
                                 connectedUsers.remove(user)
                                 user.close()
