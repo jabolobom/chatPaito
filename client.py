@@ -29,7 +29,7 @@ while running:
         else:
             message = sys.stdin.readline() # Espera input do terminal
             server.send(message.encode("utf-8")) # Envia o input como texto para o server
-            if message.upper() == "@SAIR\n": # Se a mensagem for @sair sai fecha o cliente
+            if message.upper() == "@SAIR\n": # Se a mensagem for @sair fecha o cliente
                 sys.exit(1) # caso não haja o sysexit o cliente fica em um loop infinito sem resposta após ser desconectado do server
 
 server.close()
